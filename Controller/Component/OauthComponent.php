@@ -243,6 +243,9 @@ class OauthComponent extends Component {
 	public function authorizeV2($oAuthConsumerKey, $oAuthCallback) {
 		$this->_getMap();
 		$redirect = $this->_oAuthRequestDefaults['uri']['scheme'] . '://' . $this->_map['hosts']['oauth'] . '/' . $this->_map['oauth']['authorize'] . '?client_id=' . $oAuthConsumerKey . '&redirect_uri=' . $oAuthCallback;
+		if (!empty($this->_map['oauth']['response_type'])) {
+			$redirect .= '&response_type=' . $this->_map['oauth']['response_type'];
+		}
 		if (!empty($this->_config[$this->useDbConfig]['scope'])) {
 			$redirect .= '&scope=' . $this->_config[$this->useDbConfig]['scope'];
 		}
