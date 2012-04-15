@@ -474,7 +474,7 @@ class OauthComponent extends Component {
 			$this->Session->write('OAuth.'.$this->useDbConfig, $sessionData);
 
 			if ($redirect) {
-				$this->_error(__d('oauth', 'Successfully signed into '.$this->useDbConfig), $redirect);
+				$this->controller->redirect($redirect);
 			} else {
 				die(pr($this->Session->read('OAuth.'.$this->useDbConfig)));
 			}
