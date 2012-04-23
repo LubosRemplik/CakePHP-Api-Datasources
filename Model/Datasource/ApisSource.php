@@ -340,7 +340,7 @@ class ApisSource extends DataSource {
 		foreach ($map as $path => $conditions) {
 			$optional = (isset($conditions['optional'])) ? $conditions['optional'] : array();
 			unset($conditions['optional']);
-			if (array_intersect($fields, $conditions) == $conditions) {
+			if (array_values(array_intersect($fields, $conditions)) == array_values($conditions)) {
 				return array($path, $conditions, $optional);
 			}
 		}
