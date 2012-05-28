@@ -8,6 +8,7 @@
  * @author Dean Sofer
  **/
 App::uses('DataSource', 'Model/Datasource');
+App::uses('CakeSession', 'Model/Datasource');
 class ApisSource extends DataSource {
 
 /**
@@ -203,16 +204,27 @@ class ApisSource extends DataSource {
 	 * @return array $request
 	 */
 	public function addOauth(&$model, $request) {
-		if (!empty($this->config['oauth_token']) && !empty($this->config['oauth_token_secret'])) {
+		$oauthToken = null;
+		$oauthTokenSecret = null;
+		$keyName = $this->configKeyName;
+		if (!empty($this->config['oauth_token'])) {
+			$oauthToken = $this->config['oauth_token'];
+		}
+		if (empty($oauthToken) && CakeSession::check("OAuth.$keyName.oauth_token")) {
+			$oauthToken = CakeSession::read("OAuth.$keyName.oauth_token");
+		}
+		if (!empty($this->config['oauth_token_secret'])) {
+			$oauthTokenSecret = $this->config['oauth_token_secret'];
+		}
+		if (empty($oauthTokenSecret) && CakeSession::check("OAuth.$keyName.oauth_token_secret")) {
+			$oauthTokenSecret = CakeSession::read("OAuth.$keyName.oauth_token_secret");
+		}
+		if (!empty($oauthToken) && !empty($oauthTokenSecret)) {
 			$request['auth']['method'] = 'OAuth';
 			$request['auth']['oauth_consumer_key'] = $this->config['login'];
 			$request['auth']['oauth_consumer_secret'] = $this->config['password'];
-			if (isset($this->config['oauth_token'])) {
-				$request['auth']['oauth_token'] = $this->config['oauth_token'];
-			}
-			if (isset($this->config['oauth_token_secret'])) {
-				$request['auth']['oauth_token_secret'] = $this->config['oauth_token_secret'];
-			}
+			$request['auth']['oauth_token'] = $oauthToken;
+			$request['auth']['oauth_token_secret'] = $oauthTokenSecret;
 		}
 		return $request;
 	}
